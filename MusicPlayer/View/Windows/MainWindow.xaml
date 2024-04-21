@@ -3,10 +3,51 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       xmlns:cmd ="clr-namespace:MusicPlayer.Infrastrucutre.Commands"
+        xmlns:vm ="clr-namespace:MusicPlayer.ViewModels"
         xmlns:local="clr-namespace:MusicPlayer"
+        xmlns:MaterialDesign = "http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+         Height="550" Width="300"
+        WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize"
+        AllowsTransparency="True" Background="{x:Null}">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
+    
+    <Grid Background="{x:Null}">
+        <MaterialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}">
+            <StackPanel>
+                <StackPanel.Background>
+                    <LinearGradientBrush  StartPoint="0.1,0" EndPoint="0.3,1">
+                        <GradientStop Color="#121212" Offset="1"/>
+                        <GradientStop Color="#292929" Offset="0"/>
+
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+                <Grid Height="70">
+                    <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Left" Margin=" 20  0" ToolTip="Open File" x:Name="btnFile">
+                            <StackPanel>
+                                <MaterialDesign:PackIcon Kind="Folder" Width="35" Height="35"></MaterialDesign:PackIcon>
+                            </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Right" Margin=" 20  0" ToolTip="Close Application" x:Name="btnClose">
+
+                        <StackPanel>
+                                <MaterialDesign:PackIcon Kind="Close" Width="35" Height="35"></MaterialDesign:PackIcon>
+                            </StackPanel>
+                    </Button>
+
+                </Grid>
+                <Grid>
+                    <Ellipse Fill="#731101" Margin="20"></Ellipse>
+                    <Image Margin="10" Height="200" Stretch="Uniform" x:Name="ImageForMusic" Source="\Data/Images/MusicIcon3.png"/>
+                </Grid>
+
+
+            </StackPanel>
+
+        </MaterialDesign:Card>
 
     </Grid>
 </Window>
