@@ -20,5 +20,10 @@ namespace MusicPlayer
         {
             InitializeComponent();
         }
+
+        private void Card_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
     }
 }

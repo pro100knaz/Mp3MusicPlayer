@@ -10,6 +10,8 @@
 
   <ItemGroup>
     <None Remove="Data\Images\MusicIcon.png" />
+    <None Remove="Data\Images\MusicIcon2.png" />
+    <None Remove="Data\Images\MusicIcon3.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +25,12 @@
 
   <ItemGroup>
     <Content Include="Data\Images\MusicIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Images\MusicIcon2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Images\MusicIcon3.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
