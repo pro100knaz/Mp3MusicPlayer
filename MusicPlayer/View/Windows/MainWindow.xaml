@@ -36,6 +36,9 @@
                         <StackPanel>
                                 <MaterialDesign:PackIcon Kind="Close" Width="35" Height="35"></MaterialDesign:PackIcon>
                             </StackPanel>
+                       <Button.Command>
+                           <cmd:CloseApplicationCommand></cmd:CloseApplicationCommand>
+                       </Button.Command>
                     </Button>
 
                 </Grid>
