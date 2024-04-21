@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Mime;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using MusicPlayer.Infrastrucutre.Commands;
+using MaterialDesignThemes.Wpf;
 using MusicPlayer.ViewModels.Base;
 
 namespace MusicPlayer.ViewModels
@@ -21,7 +23,7 @@ namespace MusicPlayer.ViewModels
             #region CurrentSongConnectionString
 
 
-            public string _currentSongConnectionString;
+            public string _currentSongConnectionString = String.Empty;
                 public string CurrentSongConnectionString
                 {
                     get => _currentSongConnectionString;
@@ -97,7 +99,7 @@ namespace MusicPlayer.ViewModels
             get => _playAndStopMusicCommand;
             set => SetField(ref _playAndStopMusicCommand, value);
         }
-        private bool CanPlayAndStopMusicCommandExecute(object p) => true;
+        private bool CanPlayAndStopMusicCommandExecute(object p) => CurrentSongConnectionString != string.Empty;
 
         private void OnPlayAndStopMusicCommandExecuted(object p)
         {
@@ -111,10 +113,51 @@ namespace MusicPlayer.ViewModels
                 Player.Stop();
                 _isPlaying = false;
             }
+
+            ChangeImagePlayAndStopCommand.Execute(null);
         }
 
 
         #endregion
+
+        #region ChangeImagePlayAndStopCommand 
+
+        private ObservableCollection<PackIcon> IconsPlayAndStopCollection;
+
+        private PackIcon _firstIcon;
+        public PackIcon FirstIcon
+        {
+            get => _firstIcon;
+            set => SetField(ref _firstIcon, value);
+        }
+
+
+        private ICommand _changeImagePlayAndStopCommand;
+
+        public ICommand ChangeImagePlayAndStopCommand
+        {
+            get => _changeImagePlayAndStopCommand;
+            set => SetField(ref _changeImagePlayAndStopCommand, value);
+        }
+
+        private bool CanChangeImagePlayAndStopCommandExecute (object p) => true;
+
+        private void OnChangeImagePlayAndStopCommandExecuted(object p)
+        {
+            IconsPlayAndStopCollection.Move(0,1);
+            FirstIcon = IconsPlayAndStopCollection[0];
+            // 1 Пусть отображается первый элемент ObservableCollection тогда при нажатии кнопки они будут меняться местами(выбрал этот вариант)
+
+            // 2 Пусть отображается один из двух если сейчас отображается первый то будет отображаться в следующий раз
+            //тогда будет проверять в параметре какой обьект установлен сейчас и будем устанавливать тот который сейчас не стоит
+
+
+        }
+
+
+
+        #endregion
+
 
         #endregion
         public MainWindowViewModel()
@@ -128,7 +171,16 @@ namespace MusicPlayer.ViewModels
             PlayAndStopMusicCommand =
                 new LambdaCommand(OnPlayAndStopMusicCommandExecuted, CanPlayAndStopMusicCommandExecute);
 
+            ChangeImagePlayAndStopCommand = new LambdaCommand(OnChangeImagePlayAndStopCommandExecuted,
+                CanChangeImagePlayAndStopCommandExecute);
+
             #endregion
+
+            var playIcon = new PackIcon { Kind = PackIconKind.Play, Width = 20, Height = 20 };
+            var stopIcon = new PackIcon { Kind = PackIconKind.Stop, Width = 20, Height = 20 };
+            FirstIcon = playIcon;
+            IconsPlayAndStopCollection = new ObservableCollection<PackIcon>() { playIcon, stopIcon };
+
 
         }
     }

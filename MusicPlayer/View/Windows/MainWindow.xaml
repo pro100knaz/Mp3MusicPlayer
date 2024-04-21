@@ -67,9 +67,9 @@
                         <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Right" Margin="10 0" ToolTip="Play Next Song" x:Name="btnPlay"
                                 Command="{Binding PlayAndStopMusicCommand}">
                             <StackPanel Margin="-5">
-                                <MaterialDesign:PackIcon Kind="Play" Width="20" Height="20"></MaterialDesign:PackIcon>
+                            <MaterialDesign:PackIcon Width="20" Height="20" Kind="{Binding FirstIcon.Kind}"></MaterialDesign:PackIcon>
 
-                            </StackPanel>
+                        </StackPanel>
                         </Button>
 
                         <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Right" Margin="10 0" ToolTip="Play Next Song" x:Name="btnPlayPrevious">
