@@ -21,6 +21,8 @@
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
+    <PackageReference Include="MediaPlayer.Wpf.NAudio" Version="1.0.1" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>

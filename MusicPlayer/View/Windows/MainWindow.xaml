@@ -26,7 +26,8 @@
                     </LinearGradientBrush>
                 </StackPanel.Background>
                 <Grid Height="70">
-                    <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Left" Margin=" 20  0" ToolTip="Open File" x:Name="btnFile">
+                    <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Left" Margin=" 20  0" ToolTip="Open File" x:Name="btnFile"
+                            Command="{Binding OpenMusicFileCommand}">
                             <StackPanel>
                                 <MaterialDesign:PackIcon Kind="Folder" Width="35" Height="35"></MaterialDesign:PackIcon>
                             </StackPanel>
@@ -52,6 +53,8 @@
                     <TextBlock FontSize="11" Text="0:00" Margin="20 0" Foreground="White" FontWeight="ExtraLight" TextAlignment="Center" HorizontalAlignment="Left" x:Name="lblCurrentTime"/>
                     <TextBlock FontSize="11" Text="0:00" Margin="20 0" Foreground="White" FontWeight="ExtraLight" TextAlignment="Center" HorizontalAlignment="Right" x:Name="lblCurrentTime2"/>
                 </Grid>
+
+                
                 <Slider Value="0" Minimum="1" Maximum="50" Margin=" 20 0" Foreground="#FF731101" x:Name="TimerSlider"></Slider>
                 <WrapPanel HorizontalAlignment="Center" Margin=" 0 30">
                         <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Right" Margin="10 0" ToolTip="Play Next Song" x:Name="btnPlayNext">
@@ -61,7 +64,8 @@
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Right" Margin="10 0" ToolTip="Play Next Song" x:Name="btnPlay">
+                        <Button Style="{StaticResource CActionButton}" HorizontalAlignment="Right" Margin="10 0" ToolTip="Play Next Song" x:Name="btnPlay"
+                                Command="{Binding PlayAndStopMusicCommand}">
                             <StackPanel Margin="-5">
                                 <MaterialDesign:PackIcon Kind="Play" Width="20" Height="20"></MaterialDesign:PackIcon>
 
