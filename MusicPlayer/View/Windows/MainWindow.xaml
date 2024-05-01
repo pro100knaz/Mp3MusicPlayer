@@ -8,6 +8,7 @@
         xmlns:local="clr-namespace:MusicPlayer"
       
         xmlns:MaterialDesign = "http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converters="clr-namespace:MusicPlayer.Infrastrucutre.Converters"
         mc:Ignorable="d"
          Height="550" Width="300"
         WindowStartupLocation="CenterScreen" WindowStyle="None" ResizeMode="NoResize"
@@ -19,6 +20,9 @@
     </Window.DataContext>
     
     <Grid Background="{x:Null}">
+        <Grid.Resources>
+            <converters:TimeSpanToIntConverter x:Key="TimeSpanToInt"/>
+        </Grid.Resources>
         <MaterialDesign:Card Margin="10" UniformCornerRadius="20" Background="{x:Null}" MouseDown="Card_MouseDown">
             <StackPanel>
                 <StackPanel.Background>
@@ -59,10 +63,10 @@
 
                 <TextBlock Margin="10" FontSize="10" Text="C# Wpf Mp3 Music Player" TextAlignment="Center" Foreground="WhiteSmoke" FontWeight="ExtraLight" x:Name="lblSiner"></TextBlock>
                 <Grid Margin=" 0 30 0 0">
-                    <TextBlock FontSize="11" Text="{Binding  MusicTimer.MaxTimeInMinutes}" 
+                    <TextBlock FontSize="11" Text="{Binding  MusicTimer.MaxTimeInMinutes , StringFormat={}{0:mm\\:ss}}" 
                                Margin="20 0" Foreground="White" FontWeight="ExtraLight" 
                                TextAlignment="Center" HorizontalAlignment="Left" x:Name="lblCurrentTime"/>
-                    <TextBlock FontSize="11" Text="{Binding MusicTimer.CurrentTimeInMinutes}" 
+                    <TextBlock FontSize="11" Text="{Binding MusicTimer.CurrentTimeInSecond , Converter={StaticResource TimeSpanToInt}, StringFormat={}{0:mm\\:ss}}" 
                                Margin="20 0" Foreground="White" FontWeight="ExtraLight" 
                                TextAlignment="Center" HorizontalAlignment="Right" x:Name="lblCurrentTime2"/>
                     <TextBlock FontSize="11" Text="{Binding MusicTimer.CurrentTimeInSecond}" 

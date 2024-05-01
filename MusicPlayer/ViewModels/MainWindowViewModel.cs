@@ -315,7 +315,6 @@ namespace MusicPlayer.ViewModels
         public TimeSpan MaxTimeInMinutes
         {
             get => TimeSpan.FromSeconds(MaxTimeInSecond);
-            
         }
 
         public double CurrentTimeInMinutes
