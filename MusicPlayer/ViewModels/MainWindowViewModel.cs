@@ -29,6 +29,8 @@ namespace MusicPlayer.ViewModels
             set => SetField(ref _musicTimer, value);
         }
 
+
+
         public int CurrentSongTimeInSeconds
         {
             get => MusicTimer.CurrentTimeInSecond;
@@ -128,18 +130,9 @@ namespace MusicPlayer.ViewModels
                         break;
                     }
                 }
-                MusicTimer = new CurrentTimer(Player.NaturalDuration.TimeSpan.Seconds + Player.NaturalDuration.TimeSpan.Minutes * 60);
+                MusicTimer = new CurrentTimer( Player,  Player.NaturalDuration.TimeSpan.Seconds + Player.NaturalDuration.TimeSpan.Minutes * 60);
                 MusicTimer.Start();
-                // MusicTimer.CurrentTimeInSecondChanged += (sender, newvalue) => CurrentSongTimeInSeconds = newvalue;
-
-                MusicTimer.CurrentTimeInSecondChanged += MusicTimer_CurrentTimeInSecondChanged;
             }
-        }
-
-        private int c = 0;
-        private void MusicTimer_CurrentTimeInSecondChanged(object? sender, int e)
-        {
-            c = CurrentSongTimeInSeconds + e;
         }
 
 
@@ -278,7 +271,7 @@ namespace MusicPlayer.ViewModels
             FirstIcon = playIcon;
             IconsPlayAndStopCollection = new ObservableCollection<PackIcon>() { playIcon, stopIcon };
 
-            MusicTimer = new CurrentTimer();
+            MusicTimer = new CurrentTimer(Player);
         }
     }
 
@@ -286,20 +279,28 @@ namespace MusicPlayer.ViewModels
     {
         #region свойства
 
-        public int CurrentSongTimeInSeconds { get; private set; }
+        #region MediaPlayer Player - "Музыкальный проигрыватель"
 
-        public event EventHandler<int> CurrentTimeInSecondChanged;
+        ///<summary> Музыкальный проигрыватель </summary>
+        private MediaPlayer _Player;
+
+        ///<summary> Музыкальный проигрыватель </summary>
+        public MediaPlayer Player
+        {
+            get => _Player;
+            set => SetField(ref _Player, value);
+        }
+
+        #endregion
 
         private int _currentTimeInSecond = 0;
         public int CurrentTimeInSecond 
         {
             get => _currentTimeInSecond;
-
             set
             {
-                CurrentTimeInSecondChanged?.Invoke(this, value);
-
                 SetField(ref _currentTimeInSecond, value);
+                Player.Dispatcher.Invoke(() => Player.Position = TimeSpan.FromSeconds(_currentTimeInSecond));
             }
         }
 
@@ -335,15 +336,15 @@ namespace MusicPlayer.ViewModels
         }
 
         #endregion
-        public CurrentTimer()
+        public CurrentTimer( MediaPlayer player)
         {
+            Player = player;
             callback = new TimerCallback(TimerCallbackMethod);
             timer = new Timer(callback, state, dueTime, period);
         }
-        public CurrentTimer(int maxTimeInSecond) : this()
+        public CurrentTimer(MediaPlayer player, int maxTimeInSecond) : this(player)
         {
             MaxTimeInSecond = maxTimeInSecond;
-            timer = new Timer(callback, state, dueTime, period);
         }
 
 
@@ -372,15 +373,6 @@ namespace MusicPlayer.ViewModels
             timer?.Dispose();
             timer = null;
         }
-        //public void Update(int timeInSeconds)
-        //{
-        //    CurrentTimeInSecond = timeInSeconds;
-        //}
-
-        //public int GetCurrentTimerTime()
-        //{
-        //    return CurrentTimeInSecond;
-        //}
     }
 
 }

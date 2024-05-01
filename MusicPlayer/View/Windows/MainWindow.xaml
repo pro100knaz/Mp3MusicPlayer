@@ -71,7 +71,7 @@
                 </Grid>
 
 
-                <Slider Value="{Binding CurrentSongTimeInSeconds}" 
+                <Slider Value="{Binding MusicTimer.CurrentTimeInSecond }" 
                         Minimum="0" 
                         Maximum="{Binding MusicTimer.MaxTimeInSecond}" 
                         Margin=" 20 0" Foreground="#FF731101" 
