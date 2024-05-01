@@ -59,18 +59,21 @@
 
                 <TextBlock Margin="10" FontSize="10" Text="C# Wpf Mp3 Music Player" TextAlignment="Center" Foreground="WhiteSmoke" FontWeight="ExtraLight" x:Name="lblSiner"></TextBlock>
                 <Grid Margin=" 0 30 0 0">
-                    <TextBlock FontSize="11" Text="{Binding MusicTime}" 
+                    <TextBlock FontSize="11" Text="{Binding  MusicTimer.MaxTimeInMinutes}" 
                                Margin="20 0" Foreground="White" FontWeight="ExtraLight" 
                                TextAlignment="Center" HorizontalAlignment="Left" x:Name="lblCurrentTime"/>
-                    <TextBlock FontSize="11" Text="{Binding TotalTime}" 
+                    <TextBlock FontSize="11" Text="{Binding MusicTimer.CurrentTimeInMinutes}" 
                                Margin="20 0" Foreground="White" FontWeight="ExtraLight" 
                                TextAlignment="Center" HorizontalAlignment="Right" x:Name="lblCurrentTime2"/>
+                    <TextBlock FontSize="11" Text="{Binding MusicTimer.CurrentTimeInSecond}" 
+                               Margin="20 0" Foreground="White" FontWeight="ExtraLight" 
+                               TextAlignment="Center" HorizontalAlignment="Center" x:Name="lblCurrentTime3"/>
                 </Grid>
 
 
-                <Slider Value="{Binding MusicTime}" 
+                <Slider Value="{Binding CurrentSongTimeInSeconds}" 
                         Minimum="0" 
-                        Maximum="{Binding TotalTime}" 
+                        Maximum="{Binding MusicTimer.MaxTimeInSecond}" 
                         Margin=" 20 0" Foreground="#FF731101" 
                         x:Name="TimerSlider"></Slider>
                 <WrapPanel HorizontalAlignment="Center" Margin=" 0 30">

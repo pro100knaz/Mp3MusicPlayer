@@ -21,6 +21,37 @@ namespace MusicPlayer.ViewModels
     {
         #region Свойства обьектов
 
+        private CurrentTimer _musicTimer;
+
+        public CurrentTimer MusicTimer
+        {
+            get => _musicTimer;
+            set => SetField(ref _musicTimer, value);
+        }
+
+        public int CurrentSongTimeInSeconds
+        {
+            get => MusicTimer.CurrentTimeInSecond;
+            set
+            {
+                    MusicTimer.CurrentTimeInSecond = value;
+                    Player.Position = TimeSpan.FromSeconds(value);
+            }
+        }
+
+        //public int CurrentSongTimeInSeconds
+        //{
+        //    get => _musicTimer.CurrentTimeInSecond;
+        //    set
+        //    {
+        //        _currentSongTimeInSeconds = value;
+        //        // Передаем значение в MusicTimer и Player
+        //        MusicTimer.CurrentTimeInSecond = value;
+        //        Player.Position = TimeSpan.FromSeconds(value);
+        //    }
+        //}
+
+
         #region CurrentSongConnectionString
 
 
@@ -44,34 +75,10 @@ namespace MusicPlayer.ViewModels
             set => SetField(ref _player, value);
         }
 
-
-        private double _totalTime;
-        public double TotalTime
+        private void ccc()
         {
-            get => _totalTime;
-            set => SetField(ref _totalTime, value);
+            Player.Dispatcher.Invoke(() => Player.Position = TimeSpan.FromSeconds(CurrentSongTimeInSeconds));
         }
-
-        private int _musicTime;
-        public int MusicTime
-        {
-            get => _musicTime;
-            set
-            {
-                int currentTimeValue = value;
-                //в секундах 
-                /*
-                 *int minutes = (int)currentTimeValue;
-                   double doubleSeconds = currentTimeValue % 1;
-                   int seconds = (int)(doubleSeconds * 100);
-                 */
-                
-                TimeSpan result = new TimeSpan(0, 0, 0, value);
-                Player.Position = result;
-                SetField(ref _musicTime, value);
-            } 
-        }
-
 
 
         #endregion
@@ -114,8 +121,25 @@ namespace MusicPlayer.ViewModels
                 CurrentSongName = openFileDialog.SafeFileName;
 
                 Player.Open(new Uri(CurrentSongConnectionString));
+                while (!Player.NaturalDuration.HasTimeSpan)
+                {
+                    if (Player.NaturalDuration.HasTimeSpan)
+                    {
+                        break;
+                    }
+                }
+                MusicTimer = new CurrentTimer(Player.NaturalDuration.TimeSpan.Seconds + Player.NaturalDuration.TimeSpan.Minutes * 60);
+                MusicTimer.Start();
+                // MusicTimer.CurrentTimeInSecondChanged += (sender, newvalue) => CurrentSongTimeInSeconds = newvalue;
 
+                MusicTimer.CurrentTimeInSecondChanged += MusicTimer_CurrentTimeInSecondChanged;
             }
+        }
+
+        private int c = 0;
+        private void MusicTimer_CurrentTimeInSecondChanged(object? sender, int e)
+        {
+            c = CurrentSongTimeInSeconds + e;
         }
 
 
@@ -125,6 +149,7 @@ namespace MusicPlayer.ViewModels
         #region PlayAndStopMusicCommand
 
         private ICommand _playAndStopMusicCommand;
+
         private bool _isPlaying = false;
         public ICommand PlayAndStopMusicCommand
         {
@@ -135,26 +160,20 @@ namespace MusicPlayer.ViewModels
 
         private void OnPlayAndStopMusicCommandExecuted(object p)
         {
-
-            ///Надо изменить сккоро !!!!!!!!!!!!!!!!!
-             int minutesInt = Player.NaturalDuration.TimeSpan.Minutes;
-            double secondsInt = Player.NaturalDuration.TimeSpan.Seconds;
-
-            TotalTime = minutesInt + (secondsInt / 100);
-
             
             if (!_isPlaying)
             {
+                
                 Player.Play();
+                MusicTimer._isPlaying = true;
                 _isPlaying = true;
               
             }
             else
             {
                 Player.Pause();
+                MusicTimer._isPlaying = false;
                 _isPlaying = false;
-              
-
             }
 
             ChangeImagePlayAndStopCommand.Execute(null);
@@ -193,13 +212,21 @@ namespace MusicPlayer.ViewModels
 
             // 2 Пусть отображается один из двух если сейчас отображается первый то будет отображаться в следующий раз
             //тогда будет проверять в параметре какой обьект установлен сейчас и будем устанавливать тот который сейчас не стоит
-
-
         }
 
 
 
+
+
+        private void YourEventHandler(object sender, int newValue)
+        {
+            CurrentSongTimeInSeconds = newValue;
+        }
+
         #endregion
+
+        #region TimeChangedCommand
+
 
         private ICommand _timeChangedCommand;
         public ICommand TimeChangedCommand
@@ -218,12 +245,12 @@ namespace MusicPlayer.ViewModels
             //MusicTime = secondsDouble;
         }
 
+        #endregion
+
 
         #endregion
 
         #region Test
-
-        
 
 
         #endregion
@@ -245,12 +272,115 @@ namespace MusicPlayer.ViewModels
 
             #endregion
 
+
             var playIcon = new PackIcon { Kind = PackIconKind.Play, Width = 20, Height = 20 };
             var stopIcon = new PackIcon { Kind = PackIconKind.Stop, Width = 20, Height = 20 };
             FirstIcon = playIcon;
             IconsPlayAndStopCollection = new ObservableCollection<PackIcon>() { playIcon, stopIcon };
-         
 
+            MusicTimer = new CurrentTimer();
         }
     }
+
+    internal class CurrentTimer : ViewModel
+    {
+        #region свойства
+
+        public int CurrentSongTimeInSeconds { get; private set; }
+
+        public event EventHandler<int> CurrentTimeInSecondChanged;
+
+        private int _currentTimeInSecond = 0;
+        public int CurrentTimeInSecond 
+        {
+            get => _currentTimeInSecond;
+
+            set
+            {
+                CurrentTimeInSecondChanged?.Invoke(this, value);
+
+                SetField(ref _currentTimeInSecond, value);
+            }
+        }
+
+        private int _maxTimeInSecond;
+        public int MaxTimeInSecond
+        {
+            get => _maxTimeInSecond;
+            set => SetField(ref _maxTimeInSecond, value);
+        }
+        public bool _isPlaying = false;
+
+        public TimeSpan MaxTimeInMinutes
+        {
+            get => TimeSpan.FromSeconds(MaxTimeInSecond);
+            
+        }
+
+        public double CurrentTimeInMinutes
+        {
+            get
+            {
+                int minutes = CurrentTimeInSecond / 60;
+                if (minutes >= 1)
+                {
+                     return (double)(minutes + (double)((CurrentTimeInSecond % (minutes * 60)) / 100));
+
+                }
+                else
+                {
+                    return 0 + CurrentTimeInSecond / 100;
+                }
+            }
+        }
+
+        #endregion
+        public CurrentTimer()
+        {
+            callback = new TimerCallback(TimerCallbackMethod);
+            timer = new Timer(callback, state, dueTime, period);
+        }
+        public CurrentTimer(int maxTimeInSecond) : this()
+        {
+            MaxTimeInSecond = maxTimeInSecond;
+            timer = new Timer(callback, state, dueTime, period);
+        }
+
+
+        TimerCallback callback;
+        Timer timer;
+
+        int dueTime = 0; // таймер начнет срабатывать сразу после создания
+        int period = 1000; // интервал срабатывания таймера - 1 секунда
+        object state = null;
+        void TimerCallbackMethod(object state)
+        {
+            if (_isPlaying && CurrentTimeInSecond <= MaxTimeInSecond)
+            {
+                CurrentTimeInSecond += 1;
+            }
+        }
+        public void Start()
+        {
+            CurrentTimeInSecond = 0;
+            _isPlaying = false;
+        }
+
+        public void Stop()
+        {
+            _isPlaying = false;
+            timer?.Dispose();
+            timer = null;
+        }
+        //public void Update(int timeInSeconds)
+        //{
+        //    CurrentTimeInSecond = timeInSeconds;
+        //}
+
+        //public int GetCurrentTimerTime()
+        //{
+        //    return CurrentTimeInSecond;
+        //}
+    }
+
 }
